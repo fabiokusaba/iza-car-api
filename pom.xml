@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>iza.tech</groupId>
 	<artifactId>iza-car-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>iza-car-api</name>
-	<description>iza-car-api</description>
+	<description>Projeto API do Iza Car</description>
 	<url/>
 	<licenses>
 		<license/>
