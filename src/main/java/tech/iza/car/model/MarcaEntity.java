@@ -1,9 +1,7 @@
 package tech.iza.car.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +14,8 @@ public class MarcaEntity {
     //Nós detectamos que atributos de classes de modelo ou de domínio precisam ser privados
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Integer id;
 
     @Column(nullable = false, length = 30)
@@ -37,5 +37,13 @@ public class MarcaEntity {
     //prefixo "tb_nome_da_tabela" no plural, "tab_nome_da_tabela", caracterizando o mapeamento real do nosso projeto
 
     //Poderíamos colocar distinções de nomenclatura e características em colunas com a anotação '@Column'
+
+    //Falando em persistência de banco de dados não é conveniente definirmos o id das nossas entidades espera-se que o
+    //banco faça isso por nós, diante dessa concepção vamos colocar a anotação '@GeneratedValue' para indicar que o
+    //nosso banco de dados vai ser o provedor de chaves primárias
+
+    //Como definimos que o banco de dados se encarregará da geração da chave primária de nossa tabela nós podemos
+    //definir através da propriedade da anotação '@Setter' o nível de acesso do nosso id e quando definimos como NONE
+    //significa dizer que ninguém terá acesso ao método "setId" dessa propriedade
 
 }
