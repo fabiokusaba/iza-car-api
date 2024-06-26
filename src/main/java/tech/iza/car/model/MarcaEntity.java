@@ -16,10 +16,9 @@ public class MarcaEntity {
     //Nós detectamos que atributos de classes de modelo ou de domínio precisam ser privados
 
     @Id
-    @Column(name = "id_marca")
     private Integer id;
 
-    @Column(name = "nm_marca", nullable = false, length = 40)
+    @Column(nullable = false, length = 30)
     private String nome;
 
     //Para que os nossos atributos sejam acessados pela nossa aplicação precisamos ter os métodos acessores e métodos de
