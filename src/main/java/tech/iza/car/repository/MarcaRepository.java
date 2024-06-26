@@ -1,9 +1,9 @@
 package tech.iza.car.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import tech.iza.car.model.Marca;
+import tech.iza.car.model.MarcaEntity;
 
-public interface MarcaRepository extends JpaRepository<Marca, Integer> {
+public interface MarcaRepository extends JpaRepository<MarcaEntity, Integer> {
 
     //Para persistir uma Marca no banco de dados precisamos ter um repositório e esse repositório utilizando o Spring
     //Data JPA é muito simples

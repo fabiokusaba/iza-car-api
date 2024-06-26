@@ -11,7 +11,7 @@ import lombok.Setter;
 @Table(name = "tab_marca")
 @Getter
 @Setter
-public class Marca {
+public class MarcaEntity {
 
     //Nós detectamos que atributos de classes de modelo ou de domínio precisam ser privados
 
