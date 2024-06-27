@@ -4,10 +4,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.iza.car.model.MarcaEntity;
+import tech.iza.car.model.MarcaRequest;
 import tech.iza.car.model.MarcaResponse;
 import tech.iza.car.repository.MarcaRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 //Camada de negócio contendo regras de negócios e dependências adicionais este nosso componente precisará ser
@@ -33,49 +36,48 @@ public class MarcaService {
     private MarcaRepository repository;
 
     //Para que o nosso método 'gravar' tenha efeito nós vamos criar um método público 'alterar' chamando ele
-    public Integer alterar(Integer id, MarcaEntity entity) {
-        return gravar(id, entity);
+    public Integer alterar(Integer id, MarcaRequest request) {
+        return gravar(id, request);
     }
 
     //E da mesma forma vamos criar um método público 'incluir'
-    public Integer incluir(MarcaEntity entity) {
-        return gravar(null, entity);
+    public Integer incluir(MarcaRequest request) {
+        return gravar(null, request);
     }
 
     //Disponibilização de recursos
-    private Integer gravar(Integer id, MarcaEntity entity) {
+    private Integer gravar(Integer id, MarcaRequest request) {
 
         //Garantindo a integridade dos dados
-        if (entity.getNome() == null) {
+        if (request.getNome() == null) {
             throw new IllegalArgumentException("O nome da marca não pode ser nulo");
         }
 
-        if (entity.getNome().isEmpty() || entity.getNome().isBlank()) {
+        if (request.getNome().isEmpty() || request.getNome().isBlank()) {
             throw new IllegalArgumentException("O nome da marca não pode ser vazio");
         }
 
-        entity.setNome(entity.getNome().toUpperCase());
+        //Protegendo a nossa entidade
+        //MarcaEntity entity = null;
 
-        //Vamos dizer que a nossa 'dbEntity' por default vai ser igual a 'entity'
-        MarcaEntity dbEntity = entity;
+        //Se foi informado o id não vai vir uma nova entidade, nós iremos buscar uma nova entidade
+        //if (id != null) {
+            //Ao invés de criar uma nova entidade a gente vai alterar a entidade
+            //entity = buscarEntity(id);
+        //} else {
+            //Se não for informado o id aí sim iremos criar uma nova entidade
+            //entity = new MarcaEntity();
+        //}
 
-        //Se não, podemos novamente verificar se o 'id' é diferente de nulo
-        if (id != null) {
+        //Melhorando o nosso código com operações ternárias
+        MarcaEntity entity = Optional.ofNullable(id).isPresent()
+                ? repository.findById(id).orElseThrow(() -> new NoSuchElementException("Marca não encontrada"))
+                : new MarcaEntity();
 
-            //Tentamos fazer o processo de buscar se já existe, se não achar lança uma exceção
-            dbEntity = buscarEntity(id);
+        BeanUtils.copyProperties(request, entity);
 
-            //Quando a 'dbEntity' for localizada ela terá o seu id e não a 'entity' que foi criada aqui, a 'dbEntity'
-            //vai ter um valor padrão, então se temos a 'dbEntity' a 'entity' deverá vir com alguma característica
-            //alterada
-
-            //A nossa entidade foi localizada no banco, mas está com o valor desatualizado a nossa 'entity' veio com
-            //o valor atualizado, então desta forma precisamos fazer esse tratamento
-            dbEntity.setNome(entity.getNome());
-        }
-
-        //Ao final, teremos a operação de inclusão da 'dbEntity' retornando o seu id
-        return repository.save(dbEntity).getId();
+        //Ao final, teremos a operação de inclusão da 'entity' retornando o seu id
+        return repository.save(entity).getId();
     }
 
     private MarcaEntity buscarEntity(Integer id) {
