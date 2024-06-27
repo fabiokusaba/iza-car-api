@@ -3,13 +3,14 @@ package tech.iza.car.service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tech.iza.car.model.MarcaEntity;
-import tech.iza.car.model.MarcaRequest;
-import tech.iza.car.model.MarcaResponse;
+import tech.iza.car.infra.business.CampoObrigatorioException;
+import tech.iza.car.infra.business.RegistroNaoLocalizadoException;
+import tech.iza.car.model.marca.MarcaEntity;
+import tech.iza.car.model.marca.MarcaRequest;
+import tech.iza.car.model.marca.MarcaResponse;
 import tech.iza.car.repository.MarcaRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -49,12 +50,8 @@ public class MarcaService {
     private Integer gravar(Integer id, MarcaRequest request) {
 
         //Garantindo a integridade dos dados
-        if (request.getNome() == null) {
-            throw new IllegalArgumentException("O nome da marca não pode ser nulo");
-        }
-
-        if (request.getNome().isEmpty() || request.getNome().isBlank()) {
-            throw new IllegalArgumentException("O nome da marca não pode ser vazio");
+        if (request.getNome() == null || request.getNome().isBlank()) {
+            throw new CampoObrigatorioException();
         }
 
         //Protegendo a nossa entidade
@@ -70,9 +67,7 @@ public class MarcaService {
         //}
 
         //Melhorando o nosso código com operações ternárias
-        MarcaEntity entity = Optional.ofNullable(id).isPresent()
-                ? repository.findById(id).orElseThrow(() -> new NoSuchElementException("Marca não encontrada"))
-                : new MarcaEntity();
+        MarcaEntity entity = Optional.ofNullable(id).isPresent() ? buscarEntity(id) : new MarcaEntity();
 
         BeanUtils.copyProperties(request, entity);
 
@@ -85,7 +80,7 @@ public class MarcaService {
         //Quando damos um 'findById' ele nos retorna um 'Optional' que é um tipo específico da linguagem Java que
         //encapsula a resposta e essa resposta pode ser uma entidade ou pode ser um elemento caracterizado como nullable
         //que quer dizer um elemento que não foi encontrado, não sendo encontrado podemos lançar uma exceção
-        return repository.findById(id).orElseThrow(() -> new NullPointerException("Marca não encontrada pelo id " + id));
+        return repository.findById(id).orElseThrow(() -> new RegistroNaoLocalizadoException());
     }
 
     public MarcaResponse buscar(Integer id) {
