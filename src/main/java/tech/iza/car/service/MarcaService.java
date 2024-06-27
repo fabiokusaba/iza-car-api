@@ -1,11 +1,14 @@
 package tech.iza.car.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.iza.car.model.MarcaEntity;
+import tech.iza.car.model.MarcaResponse;
 import tech.iza.car.repository.MarcaRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 //Camada de negócio contendo regras de negócios e dependências adicionais este nosso componente precisará ser
 //identificado pelo spring
@@ -60,7 +63,7 @@ public class MarcaService {
         if (id != null) {
 
             //Tentamos fazer o processo de buscar se já existe, se não achar lança uma exceção
-            dbEntity = buscar(id);
+            dbEntity = buscarEntity(id);
 
             //Quando a 'dbEntity' for localizada ela terá o seu id e não a 'entity' que foi criada aqui, a 'dbEntity'
             //vai ter um valor padrão, então se temos a 'dbEntity' a 'entity' deverá vir com alguma característica
@@ -75,7 +78,7 @@ public class MarcaService {
         return repository.save(dbEntity).getId();
     }
 
-    public MarcaEntity buscar(Integer id) {
+    private MarcaEntity buscarEntity(Integer id) {
 
         //Quando damos um 'findById' ele nos retorna um 'Optional' que é um tipo específico da linguagem Java que
         //encapsula a resposta e essa resposta pode ser uma entidade ou pode ser um elemento caracterizado como nullable
@@ -83,11 +86,36 @@ public class MarcaService {
         return repository.findById(id).orElseThrow(() -> new NullPointerException("Marca não encontrada pelo id " + id));
     }
 
+    public MarcaResponse buscar(Integer id) {
+        return converter(buscarEntity(id));
+    }
+
     public void excluir(Integer id) {
         repository.deleteById(id);
     }
 
-    public List<MarcaEntity> listar() {
-        return repository.findAll();
+    public List<MarcaResponse> listar() {
+
+        //Usando os recursos do Java Stream com a concepção da linguagem funcional ou lambda expressions temos a nossa
+        //lista que vai buscar todas as entidades, mas aqui chamo o método 'stream' que tem o método 'map' que nada mais
+        //é do que a conversão de uma estrutura para outra onde ele irá acionar o 'converter' que implicitamente vai
+        //receber cada elemento convertendo para uma response
+        List<MarcaResponse> response = repository.findAll().stream().map(this::converter).collect(Collectors.toList());
+
+        return response;
+    }
+
+    //O nosso service passa a ter uma responsabilidade, além das que ele já possuí, de encapsular essa respectiva
+    //conversão, preciso converter a minha Entity em uma Response
+    private MarcaResponse converter(MarcaEntity entity) {
+
+        MarcaResponse response = new MarcaResponse();
+
+        //Podemos pedir ao spring através da classe 'BeanUtils' copiar as propriedades da nossa origem que é a entity
+        //para o nosso response que é o nosso destino, claro que para essa operação os atributos precisam ser
+        //correspondentes
+        BeanUtils.copyProperties(entity, response);
+
+        return response;
     }
 }
