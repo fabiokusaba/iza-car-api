@@ -1,7 +1,7 @@
 package tech.iza.car.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import tech.iza.car.model.MarcaEntity;
+import tech.iza.car.model.marca.MarcaEntity;
 
 public interface MarcaRepository extends JpaRepository<MarcaEntity, Integer> {
 
