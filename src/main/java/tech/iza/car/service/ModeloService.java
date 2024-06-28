@@ -43,8 +43,19 @@ public class ModeloService {
         return response;
     }
 
+    //Implementando a exclusão lógica
     public void excluir(Integer id) {
-        repository.deleteById(id);
+
+        //Para que eu possa excluir esse registro de forma lógica preciso buscar a entidade, para isso podemos usar o
+        //nosso método 'buscarEntity', caso o id não seja encontrado ele lançará uma exceção
+        ModeloEntity entity = buscarEntity(id);
+
+        //Alteramos o valor da nossa propriedade 'excluido' para true
+        entity.setExcluido(true);
+
+        //Ao final nós chamamos o repositório para salvar essa alteração e fazer com que agora o registro esteja
+        //excluído
+        repository.save(entity);
     }
 
     private Integer gravar(Integer id, ModeloRequest request) {
