@@ -30,6 +30,11 @@ public class ModeloResource {
         return ResponseFactory.ok(service.listar());
     }
 
+    @GetMapping("/marca/{marcaId}")
+    public Response getListByMarca(@PathVariable("marcaId") Integer marcaId) {
+        return ResponseFactory.ok(service.listar(marcaId));
+    }
+
     @GetMapping("/{id}")
     public Response getItem(@PathVariable("id") Integer id) {
         ModeloResponse response = service.buscar(id);
