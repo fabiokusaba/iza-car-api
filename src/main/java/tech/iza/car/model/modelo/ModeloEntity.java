@@ -17,4 +17,9 @@ public class ModeloEntity {
 
     @Column(nullable = false, length = 30)
     private String nome;
+
+    //Quando tentamos criar uma coluna e essa coluna sendo do tipo primitivo ela exige que a gente tenha um valor padrão
+    //Essa coluna vai representar a nossa exclusão lógica de Modelo, podemos pensar da seguinte forma o Modelo foi
+    //excluído? Sim ou não
+    private boolean excluido;
 }
