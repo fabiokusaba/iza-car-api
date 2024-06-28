@@ -8,4 +8,5 @@ import lombok.Setter;
 public class ModeloRequest {
 
     private String nome;
+    private Integer marca;
 }
