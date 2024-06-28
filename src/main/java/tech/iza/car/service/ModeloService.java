@@ -43,6 +43,13 @@ public class ModeloService {
         return response;
     }
 
+    public List<ModeloResponse> listar(Integer marca) {
+
+        List<ModeloResponse> response = repository.findByMarca(marca).stream().map(this::converter).collect(Collectors.toList());
+
+        return response;
+    }
+
     //Implementando a exclusão lógica
     public void excluir(Integer id) {
 
