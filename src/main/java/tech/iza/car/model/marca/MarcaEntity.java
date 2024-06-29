@@ -21,6 +21,8 @@ public class MarcaEntity {
     @Column(nullable = false, length = 30)
     private String nome;
 
+    private boolean excluido = false;
+
     //Para que os nossos atributos sejam acessados pela nossa aplicação precisamos ter os métodos acessores e métodos de
     //definição, com a utilização do Lombok usamos a anotação '@Getter' e '@Setter' ou podemos usar a anotação '@Data'
     //que nos fornece além dos getters e setters, toString e outras funcionalidades

@@ -41,6 +41,11 @@ public class MarcaResource {
         return ResponseFactory.ok(service.listar());
     }
 
+    @GetMapping("/validas")
+    public Response getListValid() {
+        return ResponseFactory.ok(service.listarMarcasValidas());
+    }
+
     //Níveis de maturidade de uma arquitetura rest
     @GetMapping(value = "/{id}")
     public Response getItem(@PathVariable("id") Integer id) {
@@ -51,5 +56,10 @@ public class MarcaResource {
     @DeleteMapping(value = "/{id}")
     public void delete(@PathVariable("id") Integer id) {
         service.excluir(id);
+    }
+
+    @DeleteMapping(value = "/exclusao-logica/{id}")
+    public void deleteLogic(@PathVariable("id") Integer id) {
+        service.exclusaoLogica(id);
     }
 }

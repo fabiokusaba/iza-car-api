@@ -91,6 +91,12 @@ public class MarcaService {
         repository.deleteById(id);
     }
 
+    public void exclusaoLogica(Integer id) {
+        var marca = buscarEntity(id);
+        marca.setExcluido(true);
+        repository.save(marca);
+    }
+
     public List<MarcaResponse> listar() {
 
         //Usando os recursos do Java Stream com a concepção da linguagem funcional ou lambda expressions temos a nossa
@@ -100,6 +106,11 @@ public class MarcaService {
         List<MarcaResponse> response = repository.findAll().stream().map(this::converter).collect(Collectors.toList());
 
         return response;
+    }
+
+    public List<MarcaResponse> listarMarcasValidas() {
+
+        return repository.findAllByExcluidoFalse().stream().map(this::converter).collect(Collectors.toList());
     }
 
     //O nosso service passa a ter uma responsabilidade, além das que ele já possuí, de encapsular essa respectiva
